@@ -24,16 +24,16 @@ using namespace std;
 GLFWwindow *window;   // pointer to GLFW window
 int w, h;             // width and height values
 
-float small_r = 0.1;  // small radius
-float big_r = 0.3;    // big radius
+float small_r = 0.1f;  // small radius
+float big_r = 0.3f;    // big radius
 int cycles = 1;       // Number of rotations
 
 int parameter = 0;    // toggle type
 
-float scale = 1.0;
-float rotate = 0.0;
-float t = 1.0;        // time
-float dt = 0.0;
+float scale = 1.0f;
+float rotate = 0.0f;
+float t = 1.0f;        // time
+float dt = 0.0f;
 
 int animationToggle = 0;
 int circleToggle = 0;
@@ -61,8 +61,6 @@ void drawHypocycloid(float s_r, float b_r, int rotations, float t) {
 
 void render() {
   // OpenGL calls go here
-  glEnable(GL_DEPTH_TEST);
-  glEnable(GL_LINE_SMOOTH);
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
   glMatrixMode(GL_MODELVIEW);
@@ -79,21 +77,21 @@ void render() {
   float temp = t * cycles * TWO_PI;
   float bsubs = big_r - small_r;
 
-  glLineWidth(0.1);
+  glLineWidth(0.1f);
 
-  glClearColor(0.15f, 0.15f, 0.15f, 0.0f);  // background color
+  glClearColor(0.2f, 0.2f, 0.2f, 0.0f);  // background color
 
   if (circleToggle != 0) {
-    glColor3f(1.0f, 1.0f, 1.0f);  // Draw a line from the center of the small circle to the point on the curve
-    glBegin(GL_LINES);
+    // Draw points at the center of the small circle and on the point on the curve
+    glPointSize(5);
+    glBegin(GL_POINTS);
     glVertex2f((bsubs) * cosf(temp), (bsubs) * sinf(temp));
     glVertex2f((bsubs) * cosf(temp) + small_r*cosf(((bsubs)/small_r) * (temp)),
                (bsubs) * sinf(temp) - small_r*sinf(((bsubs)/small_r) * (temp)));
     glEnd();
 
-    // Draw points at the center of the small circle and on the point on the curve
-    glPointSize(5);
-    glBegin(GL_POINTS);
+    glColor3f(1.0f, 1.0f, 1.0f);  // Draw a line from the center of the small circle to the point on the curve
+    glBegin(GL_LINES);
     glVertex2f((bsubs) * cosf(temp), (bsubs) * sinf(temp));
     glVertex2f((bsubs) * cosf(temp) + small_r*cosf(((bsubs)/small_r) * (temp)),
                (bsubs) * sinf(temp) - small_r*sinf(((bsubs)/small_r) * (temp)));
@@ -106,7 +104,7 @@ void render() {
     }
     // Draw the big circle
     glBegin(GL_LINE_STRIP); // GL_POINTS, GL_QUADS, GL_LINES
-    drawCircle(0.0, 0.0, big_r);
+    drawCircle(0.0f, 0.0f, big_r);
     glEnd();
 
     // Draw the small circle
@@ -124,21 +122,21 @@ void render() {
 
 void keyboard(GLFWwindow *sender, int key, int scancode, int action, int mods) {
   if(key == GLFW_KEY_Q && (action == GLFW_PRESS || action == GLFW_REPEAT)) {
-    rotate += 3.0;
+    rotate += 3.0f;
     cout << "rotation: " << rotate << endl;
   }
   if(key == GLFW_KEY_E && (action == GLFW_PRESS || action == GLFW_REPEAT)) {
-    rotate -= 3.0;
+    rotate -= 3.0f;
     cout << "rotation: " << rotate << endl;
   }
   if(key == GLFW_KEY_UP && (action == GLFW_PRESS || action == GLFW_REPEAT)) {
     switch(parameter) {
       case 0:
-        big_r += 0.01;
+        big_r += 0.01f;
         cout << "big radius: " << big_r << endl;
         break;
       case 1:
-        small_r += 0.01;
+        small_r += 0.01f;
         cout << "small radius: " << small_r << endl;
         break;
       case 2:
@@ -150,16 +148,16 @@ void keyboard(GLFWwindow *sender, int key, int scancode, int action, int mods) {
   if(key == GLFW_KEY_DOWN && (action == GLFW_PRESS || action == GLFW_REPEAT)) {
     switch(parameter) {
       case 0:
-        big_r -= 0.01;
-        if (big_r < 0.0) {
-          big_r = 0.0;
+        big_r -= 0.01f;
+        if (big_r < 0.0f) {
+          big_r = 0.0f;
         }
         cout << "big radius: " << big_r << endl;
         break;
       case 1:
-        small_r -= 0.01;
-        if (small_r < 0.0) {
-          small_r = 0.0;
+        small_r -= 0.01f;
+        if (small_r < 0.0f) {
+          small_r = 0.0f;
         }
         cout << "small radius: " << small_r << endl;
         break;
@@ -186,19 +184,20 @@ void keyboard(GLFWwindow *sender, int key, int scancode, int action, int mods) {
   }
   if(key == GLFW_KEY_R && (action == GLFW_PRESS || action == GLFW_REPEAT)) {
     if (animationToggle != 0) {
-      t = 0.0;
+      t = 0.0f;
     } else {
-      t = 1.0;
+      t = 1.0f;
       cycles = 1;
     }
     cout << "Reset" << endl;
   }
   if(key == GLFW_KEY_SPACE && (action == GLFW_PRESS || action == GLFW_REPEAT)) {
     if (animationToggle != 0) {
-      dt = 0.0;
+      dt = 0.0f;
       animationToggle = 0;
     } else {
-      dt = 0.003/cycles;
+      dt = 0.003f;
+      cycles = 1;
       animationToggle = 1;
       circleToggle = 1;
     }
@@ -213,11 +212,11 @@ void keyboard(GLFWwindow *sender, int key, int scancode, int action, int mods) {
 }
 
 void scroll(GLFWwindow* window, double xoffset, double yoffset) {
-  if (yoffset > 0.0) {
-    scale += 0.05;
+  if (yoffset > 0.0f) {
+    scale += 0.05f;
     cout << "scale: " << scale << endl;
-  } else if (yoffset < 0.0) {
-    scale -= 0.05;
+  } else if (yoffset < 0.0f) {
+    scale -= 0.05f;
     cout << "scale: " << scale << endl;
   }
 }
@@ -236,6 +235,9 @@ int main() {
   glfwSetKeyCallback(window, keyboard);
   glfwSetScrollCallback(window, scroll);
 
+  glEnable(GL_DEPTH_TEST);
+  glEnable(GL_MULTISAMPLE);
+  
   while(!glfwWindowShouldClose(window)) {
     glfwGetFramebufferSize(window, &w, &h); // get attributes of the window size and store into w and h
     glViewport(0, 0, w, h); // pixel coordinate of top left --> tell where to draw
